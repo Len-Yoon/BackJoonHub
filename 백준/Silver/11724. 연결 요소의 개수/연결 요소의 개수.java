@@ -4,58 +4,54 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    public static int N;
-    public static int M;
-    public static int answer;
-    public static ArrayList<Integer>[] edgeList;
-    public static boolean[] visited;
-    public static int[] dfsArr;
-    public static StringBuilder sb = new StringBuilder();
+    static ArrayList<Integer>[] A;
+    static boolean[] visited;
 
     public static void main(String[] args) throws Exception {
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        String line = br.readLine();
-        String[] split = line.split(" ");
+        int n = Integer.parseInt(st.nextToken()); //노드
+        int m = Integer.parseInt(st.nextToken()); //에지
 
-        N = Integer.parseInt(split[0]);
-        M = Integer.parseInt(split[1]);
-        dfsArr = new int[N];
-        edgeList = new ArrayList[N + 1];
-        visited = new boolean[N + 1];
+        A = new ArrayList[n+1];
+        visited = new boolean[n+1];
 
-        for (int i = 0; i < N + 1; i++) {
-            edgeList[i] = new ArrayList<>();
-        }
-        for (int i = 0; i < M; i++) {
-            String line1 = br.readLine();
-            String[] split1 = line1.split(" ");
-            int from = Integer.parseInt(split1[0]);
-            int to = Integer.parseInt(split1[1]);
-            edgeList[from].add(to);
-            edgeList[to].add(from);
+        for (int i = 1; i < n+1; i++) {
+            A[i] = new ArrayList<>();
         }
 
-        for (int i = 1; i <= N; i++) {
-            if (!visited[i]) {
-                dfs(i);
-                answer++;
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(br.readLine());
+            int s = Integer.parseInt(st.nextToken());
+            int e = Integer.parseInt(st.nextToken());
+
+            A[s].add(e);  //양방향 에지이므로 양쪽에 에지를 더하기
+            A[e].add(s);
+        }
+
+        int count = 0;
+
+        for (int i = 1; i < n+1; i++) {
+            if(!visited[i]) {
+                count++;
+                DFS(i);
             }
         }
 
-        bw.write(answer + "\n");
-
-        bw.flush();
-        bw.close();
-        br.close();
+        System.out.println(count);
     }
 
-    private static void dfs(int start) {
-        visited[start] = true;
-        for (int to : edgeList[start]) {
-            if (!visited[to]) {
-                dfs(to);
+    static void DFS(int v) {
+        if (visited[v]) {
+            return;
+        }
+
+        visited[v] = true;
+
+        for (int i : A[v]) {
+            if (visited[i] == false) {
+                DFS(i);
             }
         }
     }
